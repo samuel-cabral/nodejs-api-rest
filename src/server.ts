@@ -3,10 +3,9 @@ import { knex } from './databse'
 
 const app = fastify()
 
-app.get('/', async () => {
-  const tables = await knex('sqlite_schema').select('*')
-
-  return tables
+app.get('/hello', async () => {
+  const tables = await knex('sqlite_master').where('type', 'table')
+  return tables.map((table) => table.name)
 })
 
 app
