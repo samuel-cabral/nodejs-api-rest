@@ -4,11 +4,21 @@ import { env } from './env'
 
 console.log(env.DATABASE_URL)
 
-export const config: Knex.Config = {
-  client: 'sqlite',
-  connection: {
+let databaseConnection: Knex.Config['connection'] = {}
+
+if (env.DATABASE_CLIENT === 'sqlite') {
+  databaseConnection = {
     filename: env.DATABASE_URL,
-  },
+  }
+} else if (env.DATABASE_CLIENT === 'pg') {
+  databaseConnection = {
+    connectionString: env.DATABASE_URL,
+  }
+}
+
+export const config: Knex.Config = {
+  client: env.DATABASE_CLIENT,
+  connection: databaseConnection,
   useNullAsDefault: true,
   migrations: {
     extension: 'ts',
